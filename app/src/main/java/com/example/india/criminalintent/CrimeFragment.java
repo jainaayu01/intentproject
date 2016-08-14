@@ -64,7 +64,7 @@ private static final String DIALOG_DATE = "DialogDate";
                 dialog.show(fm,DIALOG_DATE);
             }
         });
-        mCrimeSolved.setChecked(mCrime.getSolved());
+        mCrimeSolved.setChecked(true);
         mCrimeSolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {

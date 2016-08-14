@@ -66,7 +66,7 @@ public class CrimeListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_crime_list,menu);
     }
 
-   /* @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.menu_item_new_crime:
@@ -79,7 +79,7 @@ public class CrimeListFragment extends Fragment {
                     return super.onOptionsItemSelected(item);
         }
 
-    }*/
+    }
     /* private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private Crime mCrime;
           private  TextView  mTitleTextView;
