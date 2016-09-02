@@ -50,11 +50,13 @@ public class CrimeListFragment extends Fragment {
     }
     private void updateUI(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
+        List<Crime> crimes = crimeLab.getCrimes();
         if(mAdapter == null) {
             mAdapter = new CrimeAdapter(crimeLab.getCrimes(), getActivity());
             mCrimeRecyclerView.setAdapter(mAdapter);
         }
         else{
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyDataSetChanged();
 
         }
@@ -85,13 +87,14 @@ public class CrimeListFragment extends Fragment {
         switch(item.getItemId()){
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
-                CrimeLab.get(getActivity()).addCrime(crime);
+
                 Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getUUID());
                 startActivity(intent);
+                CrimeLab.get(getActivity()).addCrime(crime);
                 return true;
             case R.id.menu_item_show_subtitle:
                 mSubtitleVisible = ! mSubtitleVisible;
-                //invalidateOptionsMenu() was added to give us the ability to force onCreateOptionsMenu() to be called again.
+                //invalidateOptionsMenu() is added to give us the ability to force onCreateOptionsMenu() to be called again.
                 getActivity().invalidateOptionsMenu();
                    updateSubtitle();
                 return true;

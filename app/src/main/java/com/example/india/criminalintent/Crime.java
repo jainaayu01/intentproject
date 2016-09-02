@@ -8,13 +8,15 @@ import java.util.UUID;
  */
 public class Crime {
     private UUID mUUID;
-    private String mTitle;
-    private Date date;
-    private Boolean mSolved;
+    private String mTitle = "Default Crime";
+    private Date date = new Date() ;
+    private Boolean mSolved =false;
 
-
-    public Crime(){
-        mUUID = UUID.randomUUID();
+public Crime(){
+    this(UUID.randomUUID());
+}
+    public Crime(UUID uuid){
+        mUUID = uuid;
         date = new Date();
 
     }
