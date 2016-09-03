@@ -22,6 +22,7 @@ private static final int VERSION=1;
         + "," + CrimeDbSchema.CrimeTable.Cols.TITLE +
                 "," + CrimeDbSchema.CrimeTable.Cols.DATE +
                 "," + CrimeDbSchema.CrimeTable.Cols.SOLVED +
+                "," + CrimeDbSchema.CrimeTable.Cols.SUSPECT +
            ")");
     }
 
