@@ -21,6 +21,9 @@ public Crime(){
         date = new Date();
 
     }
+    public String getPhotoFilename(){
+        return "IMG_" + getUUID().toString() + ".jpg";
+    }
 
     public void setDate(Date date) {
         this.date = date;

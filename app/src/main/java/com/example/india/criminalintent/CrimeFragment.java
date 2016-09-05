@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,7 +22,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,12 +37,16 @@ public class CrimeFragment  extends Fragment /*implements TextWatcher*/{
 private static final String DIALOG_DATE = "DialogDate";
     private  static final  int REQUEST_DATE=0;
     private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_PHOTO = 2;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mCrimeSolved;
     private Button mReportButton;
     private Button mSuspectButton;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
+    private File mPhotoFile;
       public static CrimeFragment newInstance(UUID crimeId){
           Bundle args = new Bundle();
           args.putSerializable(ARG_CRIME_ID,crimeId);
@@ -50,6 +59,7 @@ private static final String DIALOG_DATE = "DialogDate";
         super.onCreate(savedInstanceState);
        UUID crimeId = (UUID)getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+        mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
     }
 
     @Nullable
@@ -111,9 +121,25 @@ private static final String DIALOG_DATE = "DialogDate";
         if(packageManager.resolveActivity(pickContact,PackageManager.MATCH_DEFAULT_ONLY)==null){
             mSuspectButton.setEnabled(false);
         }
+        mPhotoButton = (ImageButton)view.findViewById(R.id.crime_camera);
+        mPhotoView=(ImageView)view.findViewById(R.id.crime_photo);
+        updatePhotoView();
+        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        boolean canTakePhoto = mPhotoFile!=null && captureImage.resolveActivity(packageManager)!=null;
+        if(canTakePhoto){
+            Uri uri = Uri.fromFile(mPhotoFile);
+            captureImage.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+        }
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(captureImage,REQUEST_PHOTO);
+            }
+        });
        // mTitleField.addTextChangedListener(this);
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -142,6 +168,9 @@ private static final String DIALOG_DATE = "DialogDate";
             }finally{
                 c.close();
             }
+        }
+        else if(requestCode == REQUEST_PHOTO){
+            updatePhotoView();
         }
     }
 
@@ -174,6 +203,15 @@ private static final String DIALOG_DATE = "DialogDate";
         }
         String report = getString(R.string.crime_report,mCrime.getTitle(),dateString,solvedString,suspect);
         return report;
+    }
+    private void updatePhotoView(){
+        if(mPhotoFile == null || !mPhotoFile.exists()){
+            mPhotoView.setImageDrawable(null);
+        }
+        else{
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(),getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
     }
 
        /* public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
